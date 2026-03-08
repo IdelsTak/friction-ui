@@ -18,3 +18,7 @@ Add UI-owned docs in this folder for:
 - MVU state shape and actions
 - Update loop and effect handling
 - JavaFX view composition and event wiring
+
+## UI-Specific Docs
+
+- [MVU Conventions](./MVU_CONVENTIONS.md)
