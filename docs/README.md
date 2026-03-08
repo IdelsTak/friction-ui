@@ -22,3 +22,4 @@ Add UI-owned docs in this folder for:
 ## UI-Specific Docs
 
 - [MVU Conventions](./MVU_CONVENTIONS.md)
+- [Read Model to UI State Mapping](./READ_MODEL_TO_UI_STATE_MAPPING.md)
