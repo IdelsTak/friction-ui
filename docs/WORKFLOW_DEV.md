@@ -64,6 +64,19 @@ Recommended practice:
 - Validate workflow structure locally with `actionlint` + `yamllint` + `act` dry-run.
 - Validate real packaging behavior with at least one GitHub-hosted run per target platform.
 
+## Version Label and Required Check Alignment
+
+Ensure workflow checks align with repo release policy:
+
+- PRs should include exactly one impact label:
+  - `version:major` or `version:minor` or `version:patch`
+- Optional one pre-release label:
+  - `version:alpha` or `version:beta` or `version:rc`
+- Stable PR check names from `.github/workflows/ci.yml`:
+  - `build-and-test`
+  - `version-label-check`
+- Branch protection should require both checks.
+
 ## Notes
 
 - Script is non-destructive and fast-fails on first error.
