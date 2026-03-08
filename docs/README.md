@@ -13,7 +13,7 @@ This repo keeps UI-specific documentation only. Shared architecture/product docs
 
 ## UI-Specific Extension Points
 
-Add UI-owned docs in this folder for:
+UI-owned docs in this folder cover:
 
 - MVU state shape and actions
 - Update loop and effect handling
