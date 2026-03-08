@@ -4,12 +4,12 @@ This repo keeps UI-specific documentation only. Shared architecture/product docs
 
 ## Canonical Shared Docs
 
-- [Product and Domain Overview](https://github.com/idelstak/friction-core/blob/main/docs/friction-technical-and-conceptual-overview.md)
-- [Design Decisions / ADR Source](https://github.com/idelstak/friction-core/blob/main/docs/DECISIONS.md)
-- [SPI Contracts](https://github.com/idelstak/friction-core/blob/main/docs/SPI.md)
-- [Read Model Contracts](https://github.com/idelstak/friction-core/blob/main/docs/READ_MODELS.md)
-- [Repo Boundaries](https://github.com/idelstak/friction-core/blob/main/docs/REPO_BOUNDARIES.md)
-- [Versioning Policy](https://github.com/idelstak/friction-core/blob/main/docs/VERSIONING.md)
+- [Product and Domain Overview](https://github.com/idelstak/friction-core/blob/master/docs/friction-technical-and-conceptual-overview.md)
+- [Design Decisions / ADR Source](https://github.com/idelstak/friction-core/blob/master/docs/DECISIONS.md)
+- [SPI Contracts](https://github.com/idelstak/friction-core/blob/master/docs/SPI.md)
+- [Read Model Contracts](https://github.com/idelstak/friction-core/blob/master/docs/READ_MODELS.md)
+- [Repo Boundaries](https://github.com/idelstak/friction-core/blob/master/docs/REPO_BOUNDARIES.md)
+- [Versioning Policy](https://github.com/idelstak/friction-core/blob/master/docs/VERSIONING.md)
 
 ## UI-Specific Extension Points
 
