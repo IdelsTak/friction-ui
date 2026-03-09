@@ -54,13 +54,13 @@ jobs:
               <server>
                 <id>github-adapters</id>
                 <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.PACKAGES_TOKEN}</password>
+                <password>${{ secrets.PACKAGES_TOKEN }}</password>
               </server>
               <!-- Transitive dependency repository -->
               <server>
                 <id>github-core</id>
                 <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.PACKAGES_TOKEN}</password>
+                <password>${{ secrets.PACKAGES_TOKEN }}</password>
               </server>
             </servers>
           </settings>
