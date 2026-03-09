@@ -101,6 +101,7 @@ Ensure workflow checks align with repo release policy:
   - validates tag/pom version match
   - builds non-shaded jar + `libs/` layout
   - builds `jpackage` app-image artifacts on Linux/Windows/macOS
+  - archives the detected app-image output name per OS (not hardcoded)
   - uploads cross-platform app-image archives to GitHub Release
   - uploads non-shaded jar + `libs/` distribution archive
 

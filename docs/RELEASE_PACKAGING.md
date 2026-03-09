@@ -44,6 +44,8 @@ java -cp "friction-ui-<version>.jar:libs/*" com.github.idelstak.friction.ui.Fric
     - Linux
     - Windows
     - macOS
+  - detects actual app-image output name per platform before archiving
+    (for example `friction-ui.app` on macOS)
   - uploads release assets:
     - `friction-ui-<version>-linux-app-image.tar.gz`
     - `friction-ui-<version>-windows-app-image.zip`
