@@ -83,8 +83,36 @@ Ensure workflow checks align with repo release policy:
 `friction-core` is resolved transitively.
 
 - CI token: `secrets.PACKAGES_TOKEN` (package read access).
-- CI writes Maven settings for server id `github`.
+- CI configures Maven server id `github` via `actions/setup-java`.
 - Dependency pin and upgrade policy: `docs/PACKAGE_CONSUMPTION.md`.
+
+## Release and Artifact Workflows
+
+- `release.yml` (push to `master`):
+  - resolves semver bump from PR labels
+  - bumps `pom.xml` version
+  - commits bump, tags, and creates GitHub release notes
+  - changelog is generated from current PR only:
+    - `# Changelog`
+    - `#<PR_NUMBER> <PR_TITLE>`
+    - cleaned PR body
+- `publish-ui.yml` (`workflow_run` on successful `Release`):
+  - checks out latest semver tag
+  - validates tag/pom version match
+  - builds non-shaded jar + `libs/` layout
+  - builds `jpackage` app-image artifacts on Linux/Windows/macOS
+  - uploads cross-platform app-image archives to GitHub Release
+  - uploads non-shaded jar + `libs/` distribution archive
+
+Packaging details: `docs/RELEASE_PACKAGING.md`.
+
+## Artifact Retention Policy
+
+- `publish-ui.yml` attaches release outputs directly to GitHub Releases.
+- It does not use `actions/upload-artifact`, so no temporary artifact retention
+  window is configured there.
+- If temporary CI artifacts are introduced later, set explicit short retention
+  (`retention-days: 1` or similarly minimal).
 
 ## Notes
 

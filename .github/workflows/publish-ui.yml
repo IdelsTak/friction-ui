@@ -1,0 +1,221 @@
+---
+name: Publish UI Artifacts
+
+'on':
+  workflow_run:
+    workflows:
+      - Release
+    types:
+      - completed
+
+permissions:
+  contents: write
+  packages: read
+
+concurrency:
+  group: publish-ui-master
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: prepare
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Resolve latest release tag
+        id: tag
+        run: |
+          set -euo pipefail
+          git fetch --tags --force
+          latest_tag="$(
+            git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1
+          )"
+          if [[ -z "${latest_tag}" ]]; then
+            echo "No stable semver tag found (expected vX.Y.Z)."
+            exit 1
+          fi
+          echo "tag=${latest_tag}" >> "$GITHUB_OUTPUT"
+          echo "version=${latest_tag#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout latest tag
+        run: |
+          set -euo pipefail
+          git checkout "${{ steps.tag.outputs.tag }}"
+
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
+
+      - name: Validate pom.xml matches tag
+        run: |
+          set -euo pipefail
+          tag="${{ steps.tag.outputs.tag }}"
+          tag_version="${tag#v}"
+          pom_version="$({
+            xmlstarlet sel -t \
+              -v "/*[local-name()='project']/*[local-name()='version']" \
+              pom.xml
+          } | tail -n 1)"
+          if [[ "${pom_version}" != "${tag_version}" ]]; then
+            echo "pom.xml version (${pom_version})"
+            echo "does not match tag (${tag_version})"
+            exit 1
+          fi
+
+  package-ui:
+    name: package-ui-${{ matrix.os_label }}
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+      MAIN_CLASS: com.github.idelstak.friction.ui.FrictionUi
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            os_label: linux
+            archive_ext: tar.gz
+          - os: windows-latest
+            os_label: windows
+            archive_ext: zip
+          - os: macos-latest
+            os_label: macos
+            archive_ext: tar.gz
+
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: PACKAGES_TOKEN
+
+      - name: Build non-shaded jar + libs
+        run: mvn -B -ntp -DskipTests package
+
+      - name: Build jpackage app-image (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p packaging/out
+          jpackage \
+            --type app-image \
+            --name friction-ui \
+            --input target \
+            --main-jar "friction-ui-${VERSION}.jar" \
+            --main-class "${MAIN_CLASS}" \
+            --dest packaging/out
+
+      - name: Build jpackage app-image (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path packaging/out -Force | Out-Null
+          jpackage `
+            --type app-image `
+            --name friction-ui `
+            --input target `
+            --main-jar "friction-ui-$env:VERSION.jar" `
+            --main-class "$env:MAIN_CLASS" `
+            --dest packaging/out
+
+      - name: Archive app-image (Linux/macOS)
+        if: runner.os != 'Windows'
+        id: archive_unix
+        shell: bash
+        run: |
+          set -euo pipefail
+          suffix="${{ matrix.os_label }}-app-image.tar.gz"
+          archive="friction-ui-${VERSION}-${suffix}"
+          tar -C packaging/out -czf "$archive" friction-ui
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Archive app-image (Windows)
+        if: runner.os == 'Windows'
+        id: archive_windows
+        shell: pwsh
+        run: |
+          $archive = (
+            "friction-ui-$env:VERSION-${{ matrix.os_label }}-app-image.zip"
+          )
+          Compress-Archive `
+            -Path "packaging/out/friction-ui" `
+            -DestinationPath $archive `
+            -Force
+          "archive=$archive" | Out-File `
+            -FilePath $env:GITHUB_OUTPUT `
+            -Append `
+            -Encoding utf8
+
+      - name: Create non-shaded jar + libs archive (Linux only)
+        if: runner.os == 'Linux'
+        id: jar_dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          jar="target/friction-ui-${VERSION}.jar"
+          if [[ ! -f "$jar" ]]; then
+            echo "Expected jar not found: $jar"
+            exit 1
+          fi
+          if [[ ! -d target/libs ]]; then
+            echo "Expected libs directory not found: target/libs"
+            exit 1
+          fi
+          staging="release/friction-ui-${VERSION}"
+          mkdir -p "$staging/libs"
+          cp "$jar" "$staging/"
+          cp -R target/libs/. "$staging/libs/"
+          archive="friction-ui-${VERSION}-jar-libs.tar.gz"
+          tar -C release -czf "$archive" "friction-ui-${VERSION}"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release assets (Linux)
+        if: runner.os == 'Linux'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          files: |
+            ${{ steps.archive_unix.outputs.archive }}
+            ${{ steps.jar_dist.outputs.archive }}
+
+      - name: Upload release assets (macOS)
+        if: runner.os == 'macOS'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          files: |
+            ${{ steps.archive_unix.outputs.archive }}
+
+      - name: Upload release assets (Windows)
+        if: runner.os == 'Windows'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          files: |
+            ${{ steps.archive_windows.outputs.archive }}
