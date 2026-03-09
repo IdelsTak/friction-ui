@@ -8,14 +8,50 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <exec.mainClass>com.github.idelstak.friction.ui.FrictionUi</exec.mainClass>
-        <friction.adapters.version>0.1.1</friction.adapters.version>
+        <exec.mainClass>com.github.idelstak.friction.ui.FrictionApp</exec.mainClass>
+        <friction.adapters.version>0.2.0</friction.adapters.version>
+        <javafx.version>27-ea+6</javafx.version>
+        <rxjava.version>3.1.12</rxjava.version>
+        <testfx.version>4.0.18</testfx.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.github.idelstak</groupId>
             <artifactId>friction-adapters</artifactId>
             <version>${friction.adapters.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.12.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>${testfx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <version>21.0.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <repositories>
@@ -33,11 +69,24 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.idelstak.friction.ui.FrictionUi</mainClass>
+                            <mainClass>com.github.idelstak.friction.ui.FrictionApp</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.5</version>
+                <configuration>
+                    <argLine>
+                        -Dtestfx.robot=glass
+                        -Dtestfx.headless=true
+                        -Dprism.order=sw
+                        -Dprism.text=t2k
+                        -Djava.awt.headless=true
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>

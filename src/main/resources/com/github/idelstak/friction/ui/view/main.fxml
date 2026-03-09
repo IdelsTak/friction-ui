@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.github.idelstak.friction.ui.view.MainScene" fx:id="root" prefWidth="900.0" prefHeight="520.0" styleClass="root-pane">
+  <top>
+    <HBox spacing="8.0" styleClass="top-bar" BorderPane.alignment="CENTER_LEFT">
+      <children>
+        <Button fx:id="reload" id="reload" text="Reload" onAction="#reload" styleClass="reload-button"/>
+      </children>
+      <padding>
+        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+      </padding>
+    </HBox>
+  </top>
+  <left>
+    <VBox spacing="8.0" styleClass="pane-block" BorderPane.alignment="CENTER">
+      <children>
+        <Label text="Frictions" styleClass="pane-title"/>
+        <Label fx:id="listState" id="list-state" text="idle" styleClass="state-label"/>
+        <ListView fx:id="summary" id="summary" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+      </children>
+      <padding>
+        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+      </padding>
+    </VBox>
+  </left>
+  <center>
+    <VBox spacing="8.0" styleClass="pane-block" BorderPane.alignment="CENTER">
+      <children>
+        <Label text="Observations" styleClass="pane-title"/>
+        <Label fx:id="detailState" id="detail-state" text="idle" styleClass="state-label"/>
+        <ListView fx:id="detail" id="detail" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+      </children>
+      <padding>
+        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+      </padding>
+    </VBox>
+  </center>
+</BorderPane>
