@@ -13,12 +13,17 @@ name: CI
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   build-and-test:
     name: build-and-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +33,31 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
-          cache: maven
+
+      - name: Configure Maven auth for GitHub Packages
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.m2"
+          cat > "$HOME/.m2/settings.xml" <<'XML'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="
+                      http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github-core</id>
+                <username>${env.GITHUB_ACTOR}</username>
+                <password>${env.PACKAGES_TOKEN}</password>
+              </server>
+              <server>
+                <id>github-adapters</id>
+                <username>${env.GITHUB_ACTOR}</username>
+                <password>${env.PACKAGES_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
 
       - name: Build and test
         run: mvn -B -ntp verify

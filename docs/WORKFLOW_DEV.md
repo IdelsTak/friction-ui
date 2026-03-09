@@ -77,6 +77,15 @@ Ensure workflow checks align with repo release policy:
   - `version-label-check`
 - Branch protection should require both checks.
 
+## Package Dependency Resolution
+
+`friction-ui` consumes published `friction-core` and `friction-adapters`
+packages in CI.
+
+- CI token: `secrets.PACKAGES_TOKEN` (package read access).
+- CI writes Maven settings for `github-core` and `github-adapters` servers.
+- Dependency pin and upgrade policy: `docs/PACKAGE_CONSUMPTION.md`.
+
 ## Notes
 
 - Script is non-destructive and fast-fails on first error.

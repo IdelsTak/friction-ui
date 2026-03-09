@@ -24,3 +24,4 @@ UI-owned docs in this folder cover:
 - [MVU Conventions](./MVU_CONVENTIONS.md)
 - [Read Model to UI State Mapping](./READ_MODEL_TO_UI_STATE_MAPPING.md)
 - [SPI Consumption and Effects Wiring](./SPI_EFFECTS_WIRING.md)
+- [Package Consumption (core + adapters)](./PACKAGE_CONSUMPTION.md)
