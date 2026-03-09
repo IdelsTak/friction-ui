@@ -83,7 +83,7 @@ Ensure workflow checks align with repo release policy:
 `friction-core` is resolved transitively.
 
 - CI token: `secrets.PACKAGES_TOKEN` (package read access).
-- CI writes Maven settings for server id `github`.
+- CI configures Maven server id `github` via `actions/setup-java`.
 - Dependency pin and upgrade policy: `docs/PACKAGE_CONSUMPTION.md`.
 
 ## Notes

@@ -23,12 +23,11 @@ Rules:
 
 ## CI Authentication
 
-`ci.yml` uses `secrets.PACKAGES_TOKEN` and writes `~/.m2/settings.xml`
-with server id:
+`ci.yml` uses `actions/setup-java` with `secrets.PACKAGES_TOKEN` and server id:
 
 - `github`
 
-This is required for deterministic dependency resolution in CI.
+This writes Maven credentials used for deterministic dependency resolution in CI.
 
 ## Local Authentication
 
