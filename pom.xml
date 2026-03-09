@@ -9,5 +9,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
         <exec.mainClass>com.github.idelstak.friction.ui.FrictionUi</exec.mainClass>
+        <friction.adapters.version>0.1.1</friction.adapters.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.idelstak</groupId>
+            <artifactId>friction-adapters</artifactId>
+            <version>${friction.adapters.version}</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/idelstak/friction-adapters</url>
+        </repository>
+    </repositories>
 </project>
