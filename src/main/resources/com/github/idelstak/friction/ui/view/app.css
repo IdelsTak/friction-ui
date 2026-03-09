@@ -1,0 +1,25 @@
+.root-pane {
+  -fx-background-color: linear-gradient(to bottom right, #f4f7f8, #eef3ff);
+}
+.top-bar {
+  -fx-background-color: rgba(255, 255, 255, 0.72);
+}
+.reload-button {
+  -fx-background-color: #0b57d0;
+  -fx-text-fill: #ffffff;
+  -fx-font-weight: bold;
+}
+.pane-block {
+  -fx-background-color: rgba(255, 255, 255, 0.82);
+}
+.pane-title {
+  -fx-font-size: 14px;
+  -fx-font-weight: 700;
+}
+.state-label {
+  -fx-text-fill: #334155;
+  -fx-font-size: 12px;
+}
+.list-view {
+  -fx-background-color: #ffffff;
+}
