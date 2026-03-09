@@ -10,7 +10,6 @@ This repo follows that policy for release labeling and pre-release staging.
 
 `friction-ui` pins upstream package versions in `pom.xml`:
 
-- `friction.core.version`
 - `friction.adapters.version`
 
 Update and adoption checklist is documented in `docs/PACKAGE_CONSUMPTION.md`.

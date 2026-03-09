@@ -79,8 +79,8 @@ Ensure workflow checks align with repo release policy:
 
 ## Package Dependency Resolution
 
-`friction-ui` consumes published `friction-core` and `friction-adapters`
-packages in CI.
+`friction-ui` consumes published `friction-adapters` directly in CI.
+`friction-core` is resolved transitively.
 
 - CI token: `secrets.PACKAGES_TOKEN` (package read access).
 - CI writes Maven settings for `github-core` and `github-adapters` servers.

@@ -1,20 +1,19 @@
 # Package Consumption (core + adapters)
 
-This document defines how `friction-ui` consumes published
-`friction-core` and `friction-adapters` packages from GitHub Packages.
+This document defines how `friction-ui` consumes published packages from
+GitHub Packages.
 
 ## Version Pins
 
 `pom.xml` is the single pin point:
 
-- `friction.core.version`
 - `friction.adapters.version`
 
 Rules:
 
 - Use published versions only.
 - Do not use local/manual jar wiring in CI.
-- Update both pins intentionally during release adoption.
+- Update adapter pin intentionally during release adoption.
 
 ## Maven Repositories
 
@@ -59,15 +58,22 @@ Use a token with `read:packages` scope.
 ## Upgrade Flow
 
 1. Confirm new package versions are published in GitHub Packages.
-2. Update `friction.core.version` and/or `friction.adapters.version` in `pom.xml`.
+2. Update `friction.adapters.version` in `pom.xml`.
 3. Run `mvn -B -ntp verify` locally.
 4. Open PR with one versioning label (`version:major|minor|patch`).
 5. Confirm CI resolves both packages without local jar fallback.
 
 ## Dependency Update Checklist
 
-- [ ] `friction.core.version` is updated intentionally.
 - [ ] `friction.adapters.version` is updated intentionally.
 - [ ] Versions exist in GitHub Packages.
 - [ ] Local build succeeds with settings-based auth.
 - [ ] CI build succeeds with `PACKAGES_TOKEN`.
+
+## Transitive Dependency Note
+
+`friction-ui` depends directly on `friction-adapters` only.
+`friction-core` is resolved transitively via `friction-adapters`.
+
+Both repositories (`github-adapters` and `github-core`) remain configured so
+Maven can resolve both direct and transitive artifacts.

@@ -23,7 +23,7 @@ jobs:
     env:
       GITHUB_ACTOR: ${{ github.actor }}
       PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,10 +33,15 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+          cache: maven
 
-      - name: Configure Maven auth for GitHub Packages
+      - name: Configure Maven auth (adapters + transitive core)
         run: |
           set -euo pipefail
+          if [[ -z "${PACKAGES_TOKEN:-}" ]]; then
+            echo "Missing PACKAGES_TOKEN secret"
+            exit 1
+          fi
           mkdir -p "$HOME/.m2"
           cat > "$HOME/.m2/settings.xml" <<'XML'
           <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -45,13 +50,15 @@ jobs:
                       http://maven.apache.org/SETTINGS/1.0.0
                       https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
+              <!-- Direct dependency repository -->
               <server>
-                <id>github-core</id>
+                <id>github-adapters</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.PACKAGES_TOKEN}</password>
               </server>
+              <!-- Transitive dependency repository -->
               <server>
-                <id>github-adapters</id>
+                <id>github-core</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.PACKAGES_TOKEN}</password>
               </server>
