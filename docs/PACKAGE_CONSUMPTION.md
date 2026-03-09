@@ -17,18 +17,16 @@ Rules:
 
 ## Maven Repositories
 
-`pom.xml` declares both package repositories:
+`pom.xml` declares adapters repository:
 
-- `github-core` -> `https://maven.pkg.github.com/idelstak/friction-core`
-- `github-adapters` -> `https://maven.pkg.github.com/idelstak/friction-adapters`
+- `github` -> `https://maven.pkg.github.com/idelstak/friction-adapters`
 
 ## CI Authentication
 
 `ci.yml` uses `secrets.PACKAGES_TOKEN` and writes `~/.m2/settings.xml`
-with both server ids:
+with server id:
 
-- `github-core`
-- `github-adapters`
+- `github`
 
 This is required for deterministic dependency resolution in CI.
 
@@ -40,12 +38,7 @@ Create `~/.m2/settings.xml` with matching server ids and credentials:
 <settings>
   <servers>
     <server>
-      <id>github-core</id>
-      <username>YOUR_GITHUB_USERNAME</username>
-      <password>YOUR_PACKAGES_TOKEN</password>
-    </server>
-    <server>
-      <id>github-adapters</id>
+      <id>github</id>
       <username>YOUR_GITHUB_USERNAME</username>
       <password>YOUR_PACKAGES_TOKEN</password>
     </server>
@@ -75,5 +68,5 @@ Use a token with `read:packages` scope.
 `friction-ui` depends directly on `friction-adapters` only.
 `friction-core` is resolved transitively via `friction-adapters`.
 
-Both repositories (`github-adapters` and `github-core`) remain configured so
-Maven can resolve both direct and transitive artifacts.
+`friction-adapters` and its transitive `friction-core` dependency both resolve
+through repository id `github`, so one server credential mapping is sufficient.

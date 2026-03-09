@@ -35,7 +35,7 @@ jobs:
           java-version: '25'
           cache: maven
 
-      - name: Configure Maven auth (adapters + transitive core)
+      - name: Configure Maven auth for GitHub Packages
         run: |
           set -euo pipefail
           if [[ -z "${PACKAGES_TOKEN:-}" ]]; then
@@ -50,15 +50,8 @@ jobs:
                       http://maven.apache.org/SETTINGS/1.0.0
                       https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
-              <!-- Direct dependency repository -->
               <server>
-                <id>github-adapters</id>
-                <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.PACKAGES_TOKEN}</password>
-              </server>
-              <!-- Transitive dependency repository -->
-              <server>
-                <id>github-core</id>
+                <id>github</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.PACKAGES_TOKEN}</password>
               </server>
