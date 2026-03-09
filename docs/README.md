@@ -26,3 +26,4 @@ UI-owned docs in this folder cover:
 - [SPI Consumption and Effects Wiring](./SPI_EFFECTS_WIRING.md)
 - [Package Consumption (core + adapters)](./PACKAGE_CONSUMPTION.md)
 - [Release Packaging](./RELEASE_PACKAGING.md)
+- [Workflow Development](./WORKFLOW_DEV.md)

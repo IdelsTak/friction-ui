@@ -15,6 +15,10 @@ permissions:
   contents: read
   packages: read
 
+concurrency:
+  group: ci-pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     name: build-and-test

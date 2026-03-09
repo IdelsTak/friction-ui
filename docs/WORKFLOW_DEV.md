@@ -77,6 +77,19 @@ Ensure workflow checks align with repo release policy:
   - `version-label-check`
 - Branch protection should require both checks.
 
+## CI Concurrency
+
+`ci.yml` is configured to cancel older in-progress runs for the same PR.
+
+- Concurrency group:
+  - `ci-pr-${{ github.event.pull_request.number || github.ref }}`
+- Behavior:
+  - when new commits/label events trigger CI on the same PR, older runs are
+    canceled and only the latest run continues
+- Purpose:
+  - reduce duplicate concurrent runs from multiple PR event triggers
+  - keep check results focused on the most recent PR state
+
 ## Package Dependency Resolution
 
 `friction-ui` consumes published `friction-adapters` directly in CI.
