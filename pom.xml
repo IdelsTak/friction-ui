@@ -8,7 +8,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <exec.mainClass>com.github.idelstak.friction.ui.FrictionApp</exec.mainClass>
+        <exec.mainClass>com.github.idelstak.friction.ui.AppStart</exec.mainClass>
         <friction.adapters.version>0.2.0</friction.adapters.version>
         <javafx.version>27-ea+6</javafx.version>
         <rxjava.version>3.1.12</rxjava.version>
@@ -69,7 +69,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.idelstak.friction.ui.FrictionApp</mainClass>
+                            <mainClass>com.github.idelstak.friction.ui.AppStart</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                         </manifest>

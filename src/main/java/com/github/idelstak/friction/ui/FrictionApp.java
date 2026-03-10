@@ -17,9 +17,11 @@ public final class FrictionApp extends Application {
     public void start(Stage stage) {
         var view = new FxmlView();
         var ui = Schedulers.from(Platform::runLater);
-        var edge = new FlowEdge(Schedulers.io(), ui, loop::put);
+        var relay = new LoopAct();
+        var edge = new FlowEdge(Schedulers.io(), ui, relay);
         var kit = new LoopKit(new Update(), new RxEffect(new DemoReadPort(), new MapReadModel(), edge), view);
         loop = new AppLoop(new DefaultSeed().model(), kit);
+        relay.bind(loop);
         var scene = new Scene(view.root(), 900, 520);
         scene.getStylesheets().add(FrictionApp.class.getResource("/com/github/idelstak/friction/ui/view/app.css").toExternalForm());
         stage.setScene(scene);
@@ -35,7 +37,4 @@ public final class FrictionApp extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

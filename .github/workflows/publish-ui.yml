@@ -82,7 +82,7 @@ jobs:
       PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
       TAG: ${{ needs.prepare.outputs.tag }}
       VERSION: ${{ needs.prepare.outputs.version }}
-      MAIN_CLASS: com.github.idelstak.friction.ui.FrictionUi
+      MAIN_CLASS: com.github.idelstak.friction.ui.AppStart
     strategy:
       fail-fast: false
       matrix:
